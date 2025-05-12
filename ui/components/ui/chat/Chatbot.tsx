@@ -31,7 +31,7 @@ export default function Chatbot() {
 			const data = await response.json();
 			setMessages((prev) => [
 				...prev,
-				{sender: "bot", text: data.cevap || "No answer found."},
+				{sender: "bot", text: (data.cevap as string).split("Cevap:").pop() || "No answer found."},
 			]);
 		} catch (error) {
 			setMessages((prev) => [
