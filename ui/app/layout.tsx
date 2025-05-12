@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Izubot",
+  title: "Chat with IZU",
   description: "Your AI Assistant",
 };
 
