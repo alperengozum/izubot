@@ -4,21 +4,18 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
 BOT_TOKEN = "7520710251:AAHvm8qWYqv0KLD5uSC_uxA25-HlifBxRIk"
-API_URL = "http://127.0.0.1:8000/query"  # Buraya kendi /query endpoint URL’ini koy
+API_URL = "http://127.0.0.1:8000/query"  
 
 logging.basicConfig(level=logging.INFO)
 
-# /start komutu
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Merhaba! İZÜBOT'a hoş geldin. Sorunu yaz, hemen cevaplayayım.")
+    await update.message.reply_text("Merhaba! Chat With Izu'ye hoş geldin. Sorunu yaz, hemen cevaplayayım.")
 
-# Mesaj geldiğinde çalışır
 async def handle_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
     question_text = update.message.text
 
     payload = {
         "question": question_text
-        # Eğer fakülte filtresi eklemek istersen: "fakulte": "Mühendislik Fakültesi"
     }
 
     try:
@@ -44,7 +41,6 @@ async def handle_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(mesaj, parse_mode="Markdown")
 
-# Bot uygulaması başlatma
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_question))

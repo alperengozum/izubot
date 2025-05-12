@@ -1,12 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from haystack.document_stores import InMemoryDocumentStore
+from haystack.document_stores import InMemoryDocumentStore, FAISSDocumentStore
 from haystack.nodes import EmbeddingRetriever
 from haystack import Document
 import pandas as pd
 import pickle
 from difflib import SequenceMatcher
+import os
+
+app = FastAPI()
+
+class Query(BaseModel):
+    question: str
+    fakulte: str = None  # opsiyonel
+
+    from fastapi.middleware.cors import CORSMiddleware
 
 # 🔹 Benzerlik hesaplama fonksiyonu
 def get_similarity(a, b):
@@ -34,10 +43,13 @@ class Query(BaseModel):
     fakulte: str = None
 
 # 🔹 Excel verisini oku ve temizle
+for fname in ["faiss_index.faiss", "faiss_index.json", "faiss_document_store.db"]:
+    if os.path.exists(fname):
+        os.remove(fname)
+
 df = pd.read_excel("IzuBot.xlsx")
 df_clean = df.dropna(subset=["Soru", "Cevap"]).copy()
 
-# 🔹 Belgeleri oluştur
 documents = []
 for _, row in df_clean.iterrows():
     doc = Document(
@@ -54,6 +66,8 @@ for _, row in df_clean.iterrows():
 document_store = InMemoryDocumentStore(embedding_dim=768)
 
 # 🔹 Retriever (güçlü çok dilli model)
+document_store = FAISSDocumentStore(embedding_dim=384, faiss_index_factory_str="Flat")
+
 retriever = EmbeddingRetriever(
     document_store=document_store,
     embedding_model="sentence-transformers/xlm-r-bert-base-nli-stsb-mean-tokens",
