@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 from haystack.document_stores import FAISSDocumentStore
 from haystack.nodes import EmbeddingRetriever
 from haystack import Document
@@ -13,6 +14,19 @@ app = FastAPI()
 class Query(BaseModel):
     question: str
     fakulte: str = None  # opsiyonel
+
+    from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # sadece frontend'e izin ver
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # 🔹 FAISS dosyalarını temizle (geliştirme için)
 for fname in ["faiss_index.faiss", "faiss_index.json", "faiss_document_store.db"]:
