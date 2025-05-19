@@ -5,10 +5,10 @@ load_dotenv()
 import requests
 import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "secrettoken")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "EAAT1KSnc054BO9KfSZARrHZChwMmJvQ5QPM1hxtoeA1fdHqvjRE4UT7JvXzjmOQpMyGFpgzF5cYH4vvtB5hQHb6DjZBG5cXw4oWZC258ioH0c73aYGDvl4dhmJIhan5vZCNmJ0DEj5aExxD4KzH3dM22FfzC6cHxvCXyvLOArfX2nOvZBxbrlDjuBwF50dDOFiZBs5HJ8a2INjSiZANEu0KbkqcTG4owmIQ0H48ZD")
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "EAAT1KSnc054BO5qksMupmHc6keDCVyYAEJ0kIVOX3jgqonzA8SEFmUcQYZCLffJIA5kF68TZCfEFdTmEC3wXZAFnnzdfcK7BZBprqUgQ2s0fkfkyfhqBNqH7MyOsiEmGiAoGWFlqATAZAKBrlkmJjsmO53kJPBo4vQbscFdkGbujoubeCpQEUDMqzjY8RCcfdcixuSAGp7EG2a9Dqv5HSdadMVccUt3bBxFoZD")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID", "692885273889590")
 
 @app.route("/webhook", methods=["GET"])
@@ -65,5 +65,5 @@ def send_message(recipient, message):
     response = requests.post(url, headers=headers, json=payload)
     return response.json()
 
-if _name_ == "_main_":
-    app.run(port=3000)
+if __name__ == "__main__":
+    app.run(port=3001)

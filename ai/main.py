@@ -9,23 +9,23 @@ import pickle
 from difflib import SequenceMatcher
 import os
 
-# 🔹 GEREKSİZ FAISS DOSYALARINI TEMİZLE
+#Gereksiz faiss dosyalarını sil
 for fname in ["faiss_index.faiss", "faiss_index.json", "faiss_document_store.db"]:
     if os.path.exists(fname):
         os.remove(fname)
 
-# 🔹 Benzerlik hesaplama fonksiyonu
+# Benzerlik hesapla
 def get_similarity(a, b):
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
-# 🔹 Fakülte sınıflandırma modelini yükle
+# Fakülte sınıflandırma modeli yükle
 with open("faculty_classifier.pkl", "rb") as f:
     faculty_classifier = pickle.load(f)
 
-# 🔸 FastAPI başlat
+# FasrAPI
 app = FastAPI()
 
-# 🔸 CORS ayarları
+#  CORS ayarları
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -34,16 +34,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 🔸 API veri modeli
+#  API veri modeli
 class Query(BaseModel):
     question: str
     fakulte: str = None
 
-# 🔹 Excel verisini oku ve temizle
+# Excel verisini oku ve temizle
 df = pd.read_excel("IzuBot.xlsx")
 df_clean = df.dropna(subset=["Soru", "Cevap"]).copy()
 
-# 🔹 Belgeleri oluştur
+# Belgeleri oluştur
 documents = []
 for _, row in df_clean.iterrows():
     doc = Document(
@@ -56,10 +56,10 @@ for _, row in df_clean.iterrows():
     )
     documents.append(doc)
 
-# 🔹 InMemory Document Store (embedding_dim retriever ile uyumlu)
+# InMemory Document Store 
 document_store = InMemoryDocumentStore(embedding_dim=768)
 
-# 🔹 Retriever (çok dilli güçlü model)
+# 🔹 Retriever çok dilli güçlü model
 retriever = EmbeddingRetriever(
     document_store=document_store,
     embedding_model="sentence-transformers/xlm-r-bert-base-nli-stsb-mean-tokens",
@@ -70,7 +70,7 @@ retriever = EmbeddingRetriever(
 document_store.write_documents(documents)
 document_store.update_embeddings(retriever)
 
-# 🔹 Ana API endpoint
+#  Ana API endpoint
 @app.post("/query")
 def query_answer(query: Query):
     try:
@@ -97,7 +97,7 @@ def query_answer(query: Query):
         if matched_score < 0.35:
             return {
                 "soru": query.question,
-                "cevap": "❌ Bu soruya benzer içerik veri kümesinde bulunamadı.",
+                "cevap": "Anlamadım. Lütfen daha açık veya alternatif biçimde sorun.",
                 "eşleşen_dataset_sorusu": "—",
                 "benzerlik_skoru": round(matched_score, 3),
                 "uyarı": "⚠️ Soru çok farklı. Lütfen daha açık veya alternatif biçimde sorun."
@@ -112,7 +112,7 @@ def query_answer(query: Query):
         }
 
         if matched_score < 0.6:
-            response["uyarı"] = "⚠️ Bu cevap düşük eşleşmeyle döndürüldü. Tam doğru olmayabilir."
+            response["uyarı"] = "Sorunun cevabından emin değilim. Lütfen daha fazla bilgi verin."
         elif matched_score < 0.75:
             response["uyarı"] = "ℹ️ Bu cevap kısmen eşleşen bir içerikten döndürüldü."
 
