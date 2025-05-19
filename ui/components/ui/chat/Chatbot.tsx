@@ -13,9 +13,16 @@ export default function Chatbot() {
 			text: "Merhaba,\nIZU hakkında merak ettiğin sorulara ben cevap verebilirim. Sana nasıl yardımcı olabilirim?"
 		},
 	]);
+	const [suggestedMessages, setSuggestedMessages] = useState<string[]>([
+		"IZU'nun fakülteleri nelerdir?",
+		"Kütüphane çalışma saatleri nedir?",
+		"Online derslere nasıl katılabilirim?",
+		"Kayıt işlemleri hakkında bilgi alabilir miyim?",
+	]);
 
 	const handleSendMessage = async (text: string) => {
 		setMessages((prev) => [...prev, {sender: "user", text}]);
+		setSuggestedMessages([]); // Clear suggested messages after sending
 
 		try {
 			const response = await fetch("http://localhost:8000/query", {
@@ -56,6 +63,21 @@ export default function Chatbot() {
 					</ChatBubble>
 				))}
 			</ChatMessageList>
+			<div className={`flex flex-col gap-2 ${messages.length === 1 ? "mt-6" : "mt-14"} `}>
+			{messages.length === 1 && (
+				<div className="flex flex-wrap gap-2">
+					{suggestedMessages.map((suggestion, index) => (
+						<Button
+							key={`suggestion-${index}`}
+							variant="outline"
+							size="sm"
+							onClick={() => handleSendMessage(suggestion)}
+						>
+							{suggestion}
+						</Button>
+					))}
+				</div>
+			)}
 			<form
 				className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
 				onSubmit={(e) => {
@@ -94,6 +116,7 @@ export default function Chatbot() {
 					</Button>
 				</div>
 			</form>
+			</div>
 		</div>
 	);
 }
