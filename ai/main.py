@@ -33,7 +33,7 @@ def query_answer(query: Query):
     try:
         # OpenPipe model sorgusu
         completion = client.chat.completions.create(
-            model="openpipe:purple-days-stick",  # Buraya kendi model ID'ni yaz
+            model="openpipe:beige-dots-jump",
             messages=[
                 {
                     "role": "user",
