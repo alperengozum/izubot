@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
 # Telegram Bot Token'ı
-BOT_TOKEN = "7520710251:AAHvm8qWYqv0KLD5uSC_uxA25-HlifBxRIk"  # Lütfen buraya kendi bot token'ını yaz
+BOT_TOKEN = "7777415624:AAFhLvq3P4e-ZfZYbrNShEBHWMRdvZBicQ0"  # Lütfen buraya kendi bot token'ını yaz
 
 # FastAPI (OpenPipe destekli) backend URL
 API_URL = "http://127.0.0.1:8000/query"
